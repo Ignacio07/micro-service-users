@@ -12,7 +12,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     ) {}
 
-    async register({email, firstname, lastname, password}: RegisterDto){
+    async register({email, firstName, lastName, password}: RegisterDto){
         
         const user = await this.userService.findOneByEmail(email);
         
@@ -21,7 +21,7 @@ export class AuthService {
         }
 
         
-        return await this.userService.create({email,firstname,lastname, password: await bcryptjs.hash(password,10),});
+        return await this.userService.create({email,firstName,lastName, password: await bcryptjs.hash(password,10),});
     }
 
     async login({email, password}: LoginDto){
@@ -40,6 +40,6 @@ export class AuthService {
 
         const token = await this.jwtService.signAsync(payload);
 
-        return {token, email};
+        return {token, email, user};
     }
 }

@@ -8,11 +8,11 @@ export class RegisterDto{
 
     @Transform(({value}) => value.trim())
     @IsString()
-    firstname: string;
+    firstName: string;
 
     @Transform(({value}) => value.trim())
     @IsString()
-    lastname: string;
+    lastName: string;
 
     @Transform(({value}) => value.trim())
     @IsString()
