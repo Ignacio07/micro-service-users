@@ -5,7 +5,7 @@ export class LoginDto{
     @IsEmail()
     email: string;
 
-    @IsString()
     @Transform(({value}) => value.trim())
+    @IsString()
     password: string;
 }
