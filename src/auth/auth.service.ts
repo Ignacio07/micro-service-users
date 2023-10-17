@@ -17,7 +17,7 @@ export class AuthService {
         const user = await this.userService.findOneByEmail(email);
         
         if(user){
-            throw new BadRequestException('User already exists')
+            throw new BadRequestException('User already exists');
         }
 
         
@@ -40,6 +40,6 @@ export class AuthService {
 
         const token = await this.jwtService.signAsync(payload);
 
-        return {token, email, user};
+        return {token, email};
     }
 }
