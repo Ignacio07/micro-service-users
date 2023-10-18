@@ -4,6 +4,7 @@ import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import * as bcryptjs from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
+import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class AuthService {
@@ -41,5 +42,34 @@ export class AuthService {
         const token = await this.jwtService.signAsync(payload);
 
         return {token, email};
+    }
+
+    async sendPasswordResetEmail(email: string) {
+        const resetCode = Math.floor(1000 + Math.random() * 9000).toString();
+
+        const transporter = nodemailer.createTransport({
+            service: 'Gmail', 
+            auth: {
+                user: 'tuemail@gmail.com', 
+                pass: 'tucontraseña'
+            }
+        });
+
+        const mailOptions = {
+            from: 'tuemail@gmail.com', 
+            to: email, 
+            subject: 'Recuperación de contraseña',
+            text: `Tu código de recuperación de contraseña es: ${resetCode}`
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                throw new Error('Error al enviar el correo electrónico');
+            } else {
+                console.log('Correo electrónico enviado: ' + info.response);
+            }
+        });
+
+        return resetCode;
     }
 }

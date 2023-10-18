@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, UseGuards } from "@nestjs/common/decorators";
+import { Body, Controller, Delete, Get, Post, Request, UseGuards } from "@nestjs/common/decorators";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
@@ -19,9 +19,13 @@ export class AuthController {
         return this.authService.login(loginDto);
     }
 
-    @Get('profile')
-    @UseGuards(AuthGuard)
-    profile( @Request() req,){
-        return req.user;
+    @Post('reset')
+    async sendPasswordResetEmail(@Body() body: { email: string }) {
+      const { email } = body;
+      const resetCode = await this.authService.sendPasswordResetEmail(email);
+      return { message: 'Password reset email sent successfully', resetCode };
     }
-}
+  }
+ 
+  
+  

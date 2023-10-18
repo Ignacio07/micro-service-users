@@ -11,13 +11,37 @@ export class UserService {
     private userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return this.userRepository.save(createUserDto);
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    const user = this.userRepository.create(createUserDto);
+    return await this.userRepository.save(user);
   }
 
-  findOneByEmail(email: string){
-    return this.userRepository.findOneBy({email});
+  async findOneByEmail(email: string): Promise<User | undefined> {
+    return this.userRepository.findOneBy({ email });
   }
 
- 
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find();
+  }
+
+  async findOne(id: number): Promise<User | undefined> {
+    return this.userRepository.findOneBy({id});
+  }
+
+  async update(email: string, updateUserDto: CreateUserDto): Promise<User | undefined> {
+    const user = await this.userRepository.findOneBy({email});
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    Object.assign(user, updateUserDto);
+    return await this.userRepository.save(user);
+  }
+
+  async remove(email: string): Promise<void> {
+    const user = await this.userRepository.findOneBy({email});
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    await this.userRepository.remove(user);
+  }
 }
