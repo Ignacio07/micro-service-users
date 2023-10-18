@@ -5,6 +5,7 @@ import { LoginDto } from "./dto/login.dto";
 import * as bcryptjs from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import * as nodemailer from 'nodemailer';
+import { ResetDto } from "./dto/reset.dto";
 
 @Injectable()
 export class AuthService {
@@ -44,25 +45,31 @@ export class AuthService {
         return {token, email};
     }
 
-    async sendPasswordResetEmail(email: string) {
+    async sendPasswordResetEmail({email}: ResetDto) {
+
+        const user = await this.userService.findOneByEmail(email);
+        if (!user) {
+            throw new BadRequestException('User not exist');
+        }
         const resetCode = Math.floor(1000 + Math.random() * 9000).toString();
 
         const transporter = nodemailer.createTransport({
-            service: 'Gmail', 
+            host: 'smtp.ethereal.email',
+            port: 587,
             auth: {
-                user: 'tuemail@gmail.com', 
-                pass: 'tucontraseña'
-            }
-        });
+              user: 'haylie.fritsch@ethereal.email',
+              pass: '8e4g11Cvnk1K9puq85',
+            },
+          });
 
         const mailOptions = {
-            from: 'tuemail@gmail.com', 
+            from: 'haylie.fritsch@ethereal.email', 
             to: email, 
             subject: 'Recuperación de contraseña',
             text: `Tu código de recuperación de contraseña es: ${resetCode}`
         };
 
-        transporter.sendMail(mailOptions, (error, info) => {
+        transporter.sendMail(mailOptions, (error: any, info: { response: string; }) => {
             if (error) {
                 throw new Error('Error al enviar el correo electrónico');
             } else {
