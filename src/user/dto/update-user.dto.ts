@@ -1,7 +1,10 @@
+import { IsString } from "class-validator";
+
 export class UpdateUserDto{
     
-    email: string;
+    @IsString()
     firstName: string;
+
+    @IsString()
     lastName: string;
-    password: string;
 }

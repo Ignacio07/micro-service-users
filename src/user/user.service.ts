@@ -1,8 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+
 
 @Injectable()
 export class UserService {
@@ -28,10 +30,10 @@ export class UserService {
     return this.userRepository.findOneBy({id});
   }
 
-  async update(email: string, updateUserDto: CreateUserDto): Promise<User | undefined> {
+  async update(email: string, updateUserDto: UpdateUserDto): Promise<User | undefined> {
     const user = await this.userRepository.findOneBy({email});
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new BadRequestException('User not found');
     }
     Object.assign(user, updateUserDto);
     return await this.userRepository.save(user);
@@ -40,8 +42,17 @@ export class UserService {
   async remove(email: string): Promise<void> {
     const user = await this.userRepository.findOneBy({email});
     if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      throw new BadRequestException('User not found');
     }
     await this.userRepository.remove(user);
   }
+
+  async updateEmail(email: string, newEmail: string) {
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) {
+        throw new BadRequestException('User not found');
+    }
+    user.email = newEmail;
+    return await this.userRepository.save(user);
+}
 }

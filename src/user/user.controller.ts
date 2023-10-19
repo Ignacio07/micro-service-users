@@ -18,7 +18,7 @@ export class UserController {
     return users;
   }
 
-  @Get()
+  @Get(':id')
   async findOne(@Param('id') id: number) {
     const user = await this.userService.findOne(id);
     if (!user) {
@@ -27,7 +27,7 @@ export class UserController {
     return user;
   }
 
-  @Get()
+  @Get('/email/:email')
   async findOneByEmail(@Param('email') email: string) {
     const user = await this.userService.findOneByEmail(email);
     if (!user) {
@@ -36,15 +36,22 @@ export class UserController {
     return user;
   }
 
-  @Put()
+  @Put(':email')
   async update(@Param('email') email: string, @Body() updateUserDto: CreateUserDto) {
     const user = await this.userService.update(email, updateUserDto);
     return user;
   }
 
-  @Delete()
+  @Delete(':email')
   async remove(@Param('email') email: string) {
     await this.userService.remove(email);
-    return { message: 'User deleted' };
+    return 'User deleted';
+  }
+
+  @Post('update-email')
+  async updateEmail(@Body() emailData: { email: string, newEmail: string }) {
+    const { email, newEmail } = emailData;
+    await this.userService.updateEmail(email, newEmail);
+    return 'Email updated';
   }
 }

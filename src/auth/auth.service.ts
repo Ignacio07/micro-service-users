@@ -6,6 +6,7 @@ import * as bcryptjs from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import * as nodemailer from 'nodemailer';
 import { ResetDto } from "./dto/reset.dto";
+import { UpdateEmailDto } from "src/user/dto/update-email.dto";
 
 @Injectable()
 export class AuthService {
@@ -57,13 +58,13 @@ export class AuthService {
             host: 'smtp.ethereal.email',
             port: 587,
             auth: {
-              user: 'haylie.fritsch@ethereal.email',
-              pass: '8e4g11Cvnk1K9puq85',
+              user: 'edgar.bergnaum@ethereal.email',
+              pass: 'gjykNKdG85g68BQqAx',
             },
           });
 
         const mailOptions = {
-            from: 'haylie.fritsch@ethereal.email', 
+            from: 'odie.gislason52@etherlocalhost:3000/api/auth/reseteal.email', 
             to: email, 
             subject: 'Recuperación de contraseña',
             text: `Tu código de recuperación de contraseña es: ${resetCode}`
@@ -79,4 +80,6 @@ export class AuthService {
 
         return resetCode;
     }
+
+
 }

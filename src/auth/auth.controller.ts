@@ -1,9 +1,10 @@
-import { Body, Controller, Delete, Get, Post, Request, UseGuards } from "@nestjs/common/decorators";
+import { Body, Controller, Param, Post} from "@nestjs/common/decorators";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { ResetDto } from "./dto/reset.dto";
 import { LoginDto } from "./dto/login.dto";
-import { AuthGuard } from "./guard/auth.guard";
+import { UpdateEmailDto } from "src/user/dto/update-email.dto";
+
 
 @Controller('auth')
 export class AuthController {
@@ -24,6 +25,7 @@ export class AuthController {
     async sendPasswordResetEmail(@Body() resetDto: ResetDto) {
       return await this.authService.sendPasswordResetEmail(resetDto);
     }
+
   }
  
   
