@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateEmailDto } from './dto/update-email.dto';
 
 @Controller('users')
 export class UserController {
@@ -49,9 +50,16 @@ export class UserController {
   }
 
   @Post('update-email')
-  async updateEmail(@Body() emailData: { email: string, newEmail: string }) {
-    const { email, newEmail } = emailData;
+  async updateEmail(@Body() updateEmailDto: UpdateEmailDto) {
+    const { email, newEmail } = updateEmailDto;
     await this.userService.updateEmail(email, newEmail);
     return 'Email updated';
+  }
+
+  @Post('update-password')
+  async updatePassword(@Body() passwordData: { email: string, newPassword: string }) {
+    const { email, newPassword } = passwordData;
+    await this.userService.updatePassword(email, newPassword);
+    return 'Password updated';
   }
 }

@@ -4,6 +4,7 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import * as bcryptjs from 'bcrypt';
 
 
 @Injectable()
@@ -54,5 +55,14 @@ export class UserService {
     }
     user.email = newEmail;
     return await this.userRepository.save(user);
-}
+  }
+  
+  async updatePassword(email: string, newPassword: string) {
+    const user = await this.userRepository.findOneBy({ email });
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    user.password = bcryptjs.hashSync(newPassword, 10);
+    return await this.userRepository.save(user);
+  }
 }

@@ -6,7 +6,7 @@ import * as bcryptjs from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import * as nodemailer from 'nodemailer';
 import { ResetDto } from "./dto/reset.dto";
-import { UpdateEmailDto } from "src/user/dto/update-email.dto";
+
 
 @Injectable()
 export class AuthService {

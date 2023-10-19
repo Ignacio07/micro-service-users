@@ -3,7 +3,7 @@ import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { ResetDto } from "./dto/reset.dto";
 import { LoginDto } from "./dto/login.dto";
-import { UpdateEmailDto } from "src/user/dto/update-email.dto";
+
 
 
 @Controller('auth')
