@@ -57,6 +57,10 @@ export class UserService {
     if (user.email !== emailInput) {
         throw new BadRequestException('Email not match');
     }
+    const user_in = await this.userRepository.findOneBy({email: newEmail});
+    if (user_in){
+      throw new BadRequestException('User already exist');
+    }
     user.email = newEmail;
     return await this.userRepository.save(user);
   }
