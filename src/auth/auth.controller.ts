@@ -3,6 +3,7 @@ import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { ResetDto } from "./dto/reset.dto";
 import { LoginDto } from "./dto/login.dto";
+import { ResetPassDto } from "./dto/reset-pass.dto";
 
 
 
@@ -24,6 +25,11 @@ export class AuthController {
     @Post('reset')
     async sendPasswordResetEmail(@Body() resetDto: ResetDto) {
       return await this.authService.sendPasswordResetEmail(resetDto);
+    }
+
+    @Post('reset-pass')
+    async resetPassword(@Body() resetPassDto: ResetPassDto) {
+      return await this.authService.resetPassword(resetPassDto);
     }
 
   }

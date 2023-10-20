@@ -6,6 +6,7 @@ import * as bcryptjs from 'bcrypt';
 import { JwtService } from "@nestjs/jwt";
 import * as nodemailer from 'nodemailer';
 import { ResetDto } from "./dto/reset.dto";
+import { ResetPassDto } from "./dto/reset-pass.dto";
 
 
 @Injectable()
@@ -53,18 +54,19 @@ export class AuthService {
             throw new BadRequestException('User not exist');
         }
         const resetCode = Math.floor(1000 + Math.random() * 9000).toString();
+        const testAccount = await nodemailer.createTestAccount();
 
         const transporter = nodemailer.createTransport({
             host: 'smtp.ethereal.email',
             port: 587,
             auth: {
-              user: 'edgar.bergnaum@ethereal.email',
-              pass: 'gjykNKdG85g68BQqAx',
+              user: testAccount.user,
+              pass: testAccount.pass,
             },
           });
 
         const mailOptions = {
-            from: 'odie.gislason52@etherlocalhost:3000/api/auth/reseteal.email', 
+            from: 'test@gmail.com', 
             to: email, 
             subject: 'Recuperación de contraseña',
             text: `Tu código de recuperación de contraseña es: ${resetCode}`
@@ -74,11 +76,24 @@ export class AuthService {
             if (error) {
                 throw new Error('Error al enviar el correo electrónico');
             } else {
-                console.log('Correo electrónico enviado: ' + info.response);
+                console.log(nodemailer.getTestMessageUrl(info));
             }
         });
 
         return resetCode;
+    }
+
+    async resetPassword({email, code, codeInput, newPassword}: ResetPassDto) {
+        const user = await this.userService.findOneByEmail(email);
+        if (!user) {
+            throw new BadRequestException('User not exist');
+        }
+        console.log(code);
+        if (code !== codeInput) {
+            throw new BadRequestException('Codigo no valido');
+        }
+        user.password = await bcryptjs.hash(newPassword, 10);
+        return await this.userService.update(email, user);
     }
 
 
