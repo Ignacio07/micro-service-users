@@ -54,19 +54,18 @@ export class AuthService {
             throw new BadRequestException('User not exist');
         }
         const resetCode = Math.floor(1000 + Math.random() * 9000).toString();
-        const testAccount = await nodemailer.createTestAccount();
+
 
         const transporter = nodemailer.createTransport({
-            host: 'smtp.ethereal.email',
-            port: 587,
+            service: 'Gmail',
             auth: {
-              user: testAccount.user,
-              pass: testAccount.pass,
-            },
+                user: 'soporte.movil.nachos@gmail.com', 
+                pass: 'yazu ukcg vcxw ievo' 
+            }
           });
 
         const mailOptions = {
-            from: 'test@gmail.com', 
+            from: 'USER_EMAIL', 
             to: email, 
             subject: 'Recuperación de contraseña',
             text: `Tu código de recuperación de contraseña es: ${resetCode}`
@@ -76,7 +75,7 @@ export class AuthService {
             if (error) {
                 throw new Error('Error al enviar el correo electrónico');
             } else {
-                console.log(nodemailer.getTestMessageUrl(info));
+                console.log('Email sent: ' + info.response);
             }
         });
 

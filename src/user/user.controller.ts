@@ -2,6 +2,8 @@ import { Controller, Get, Post, Put, Delete, Param, Body, NotFoundException } fr
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateEmailDto } from './dto/update-email.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @Controller('users')
 export class UserController {
@@ -28,8 +30,9 @@ export class UserController {
     return user;
   }
 
-  @Get('/email/:email')
+  @Get('profile/:email')
   async findOneByEmail(@Param('email') email: string) {
+
     const user = await this.userService.findOneByEmail(email);
     if (!user) {
       throw new NotFoundException('User not found');
@@ -51,15 +54,21 @@ export class UserController {
 
   @Post('update-email')
   async updateEmail(@Body() updateEmailDto: UpdateEmailDto) {
-    const { email, newEmail } = updateEmailDto;
-    await this.userService.updateEmail(email, newEmail);
+    const { oldEmail, emailInput, newEmail } = updateEmailDto;
+    await this.userService.updateEmail(oldEmail, emailInput, newEmail);
     return 'Email updated';
   }
 
   @Post('update-password')
-  async updatePassword(@Body() passwordData: { email: string, newPassword: string }) {
-    const { email, newPassword } = passwordData;
-    await this.userService.updatePassword(email, newPassword);
+  async updatePassword(@Body() updatePasswordDto: UpdatePasswordDto) {
+    const { email, password, newPassword } = updatePasswordDto;
+    await this.userService.updatePassword(email, password, newPassword);
     return 'Password updated';
+  }
+
+  @Post('update-profile')
+  async updateProfile(@Body() updateUserdto: UpdateUserDto) {
+    const user = await this.userService.updateUser(updateUserdto);
+    return 'Profile updated';
   }
 }

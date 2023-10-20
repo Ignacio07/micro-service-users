@@ -1,5 +1,5 @@
 import { Transform } from "class-transformer";
-import { IsString, IsEmail, IsNotEmpty } from "class-validator";
+import { IsString, IsEmail, IsNotEmpty, MinLength, Matches } from "class-validator";
 
 export class RegisterDto{
 
@@ -20,5 +20,7 @@ export class RegisterDto{
     @Transform(({value}) => value.trim())
     @IsString()
     @IsNotEmpty({message: 'Campo vacio' })
+    @MinLength(6, { message: 'La contraseña debe tener al menos 6 caracteres' })
+    @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&-_])[A-Za-z\d@$!%*?&-_]*$/, { message: 'La contraseña debe contener al menos una mayúscula, una minúscula, un número y un carácter especial' })
     password: string;
 }
