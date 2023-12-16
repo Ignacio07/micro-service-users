@@ -50,41 +50,54 @@ export class UserService {
   }
 
   async updateEmail(oldEmail: string, emailInput: string, newEmail: string) {
-    const user = await this.userRepository.findOneBy({ email: oldEmail });
-    if (!user) {
-        throw new BadRequestException('User not found');
+    try{
+
+      const user = await this.userRepository.findOneBy({ email: oldEmail });
+      if (!user) {
+          throw new BadRequestException('User not found');
+      }
+      if (user.email !== emailInput) {
+          throw new BadRequestException('Email not match');
+      }
+      const user_in = await this.userRepository.findOneBy({email: newEmail});
+      if (user_in){
+        throw new BadRequestException('User already exist');
+      }
+      user.email = newEmail;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new Error(`Error al actualizar email: ${error}`);
     }
-    if (user.email !== emailInput) {
-        throw new BadRequestException('Email not match');
-    }
-    const user_in = await this.userRepository.findOneBy({email: newEmail});
-    if (user_in){
-      throw new BadRequestException('User already exist');
-    }
-    user.email = newEmail;
-    return await this.userRepository.save(user);
   }
   
   async updatePassword(email: string, password: string,newPassword: string) {
-    const user = await this.userRepository.findOneBy({ email });
-    if (!user) {
-      throw new BadRequestException('User not found');
+    try{  
+      const user = await this.userRepository.findOneBy({ email });
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+      if (!bcryptjs.compareSync(password, user.password)) {
+        throw new BadRequestException('Password not match');
+      }
+      user.password = bcryptjs.hashSync(newPassword, 10);
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new Error(`Error al actualizar contraseña: ${error}`);
     }
-    if (!bcryptjs.compareSync(password, user.password)) {
-      throw new BadRequestException('Password not match');
-    }
-    user.password = bcryptjs.hashSync(newPassword, 10);
-    return await this.userRepository.save(user);
   }
 
   async updateUser(updateUserDto: UpdateUserDto) {
-    const email = updateUserDto.email;
-    const user = await this.userRepository.findOneBy({ email });
-    if (!user) {
-      throw new BadRequestException('User not found');
+    try{  
+      const email = updateUserDto.email;
+      const user = await this.userRepository.findOneBy({ email });
+      if (!user) {
+        throw new BadRequestException('User not found');
+      }
+      user.firstName = updateUserDto.firstName;
+      user.lastName = updateUserDto.lastName;
+      return await this.userRepository.save(user);
+    } catch (error) {
+      throw new Error(`Error al actualizar usuario: ${error}`);
     }
-    user.firstName = updateUserDto.firstName;
-    user.lastName = updateUserDto.lastName;
-    return await this.userRepository.save(user);
   }
 }
